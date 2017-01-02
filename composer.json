@@ -14,7 +14,7 @@
         "mockery/mockery": "^0.9"
     },
     "suggest": {
-        "mockery/mockery": "Required when using the FakeFormRequest test helper",
+        "mockery/mockery": "Required when using the FakeFormRequest test helper"
     },
     "autoload": {
         "psr-4": {
