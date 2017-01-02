@@ -44,13 +44,13 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
         $options = ['option' => 'value'];
 
         $this->formFactory->shouldReceive('create')
+            ->once()
             ->with('FormType', $data, $options)
-            ->andReturn($this->form)
-            ->once();
+            ->andReturn($this->form);
 
         $this->form->shouldReceive('handleRequest')
-            ->with($this->request)
-            ->once();
+            ->once()
+            ->with($this->request);
 
         $this->form->shouldReceive('isSubmitted')
             ->andReturn(true);
@@ -84,7 +84,7 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Keystone\Symfony\FormRequest\Exception\FormAlreadyHandledException
+     * @expectedException \Keystone\Symfony\FormRequest\Exception\FormAlreadyHandledException
      */
     public function testCanOnlyHandleOnce()
     {
@@ -103,7 +103,7 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Keystone\Symfony\FormRequest\Exception\FormNotHandledException
+     * @expectedException \Keystone\Symfony\FormRequest\Exception\FormNotHandledException
      */
     public function testGetDataThrowsExceptionIfNotHandled()
     {
@@ -121,7 +121,7 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Keystone\Symfony\FormRequest\Exception\FormNotHandledException
+     * @expectedException \Keystone\Symfony\FormRequest\Exception\FormNotHandledException
      */
     public function testIsValidThrowsExceptionIfNotHandled()
     {
@@ -139,7 +139,7 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Keystone\Symfony\FormRequest\Exception\FormNotHandledException
+     * @expectedException \Keystone\Symfony\FormRequest\Exception\FormNotHandledException
      */
     public function testIsSubmittedThrowsExceptionIfNotHandled()
     {
@@ -154,7 +154,7 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Keystone\Symfony\FormRequest\Exception\FormNotHandledException
+     * @expectedException \Keystone\Symfony\FormRequest\Exception\FormNotHandledException
      */
     public function testGetFormThrowsExceptionIfNotHandled()
     {
@@ -173,7 +173,7 @@ class FormRequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Keystone\Symfony\FormRequest\Exception\FormNotHandledException
+     * @expectedException \Keystone\Symfony\FormRequest\Exception\FormNotHandledException
      */
     public function testCreateFormViewThrowsExceptionIfNotHandled()
     {

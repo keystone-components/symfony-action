@@ -1,38 +1,54 @@
 <?php
 
-namespace Keystone\Symfony\FormRequest\Request;
+namespace Keystone\Symfony\FormRequest\Testing\Request;
 
 use Keystone\Symfony\FormRequest\Exception\FormAlreadyHandledException;
 use Keystone\Symfony\FormRequest\Exception\FormNotHandledException;
-use Symfony\Component\Form\FormFactoryInterface;
+use Keystone\Symfony\FormRequest\Request\FormRequestInterface;
+use Mockery;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 
-class FormRequest implements FormRequestInterface
+class FakeFormRequest implements FormRequestInterface
 {
     /**
      * @var Request
      */
-    private $request;
+    public $request;
 
     /**
-     * @var FormFactoryInterface;
+     * @var FormInterface
      */
-    private $formFactory;
+    public $form;
 
     /**
-     * @var FormInterface;
+     * @var FormView
      */
-    private $form;
+    public $formView;
 
     /**
+     * @var bool
+     */
+    public $handled = false;
+
+    /**
+     * @param bool $submitted
+     * @param bool $valid
+     * @param mixed $data
      * @param Request $request
-     * @param FormFactoryInterface $formFactory
      */
-    public function __construct(Request $request, FormFactoryInterface $formFactory)
+    public function __construct($submitted = false, $valid = false, $data = null, Request $request = null)
     {
-        $this->request = $request;
-        $this->formFactory = $formFactory;
+        $this->request = $request ?: new Request();
+
+        $this->form = Mockery::mock(FormInterface::class, [
+            'isSubmitted' => $submitted,
+            'isValid' => $valid,
+            'getData' => $data,
+        ]);
+
+        $this->formView = Mockery::mock(FormView::class);
     }
 
     /**
@@ -40,12 +56,11 @@ class FormRequest implements FormRequestInterface
      */
     public function handle($formType, $bindData = null, array $options = [])
     {
-        if ($this->form !== null) {
-            throw new FormAlreadyHandledException($this->form->getName());
+        if ($this->handled) {
+            throw new FormAlreadyHandledException();
         }
 
-        $this->form = $this->formFactory->create($formType, $bindData, $options);
-        $this->form->handleRequest($this->request);
+        $this->handled = true;
 
         return $this->form->isSubmitted() && $this->form->isValid();
     }
@@ -105,12 +120,15 @@ class FormRequest implements FormRequestInterface
     {
         $this->assertFormHandled();
 
-        return $this->form->createView();
+        return $this->formView;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     private function assertFormHandled()
     {
-        if ($this->form === null) {
+        if (!$this->handled) {
             throw new FormNotHandledException();
         }
     }

@@ -13,6 +13,9 @@
         "phpunit/phpunit": "^5.7",
         "mockery/mockery": "^0.9"
     },
+    "suggest": {
+        "mockery/mockery": "Required when using the FakeFormRequest test helper",
+    },
     "autoload": {
         "psr-4": {
             "Keystone\\Symfony\\FormRequest\\": "src/"
